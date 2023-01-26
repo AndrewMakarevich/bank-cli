@@ -2,12 +2,15 @@
   "name": "bank-cli",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./src/index.ts",
-   "build":"tsc --build",
-   "prod": "node ./dist"
+    "build":"tsc --build",
+    "prod": "node ./dist"
+  },
+  "bin":{
+    "bank-cli":"./dist/index.js"
   },
   "repository": {
     "type": "git",
