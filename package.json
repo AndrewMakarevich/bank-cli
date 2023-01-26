@@ -5,12 +5,13 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon ./src/index.ts",
-    "build":"tsc --build",
+    "watch": "nodemon ./src/index.ts",
+    "dev":"ts-node ./src/index.ts",
+    "build": "tsc --build",
     "prod": "node ./dist"
   },
-  "bin":{
-    "bank-cli":"./dist/index.js"
+  "bin": {
+    "bank-cli": "./dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
   },
   "homepage": "https://github.com/AndrewMakarevich/bank-cli#readme",
   "dependencies": {
+    "commander": "^10.0.0",
     "nodemon": "^2.0.20",
     "ts-node": "^10.9.1"
   },

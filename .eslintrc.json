@@ -19,6 +19,10 @@
     "rules": {
         "no-console":1,
         "prettier/prettier":2,
-        "prefer-arrow-callback":2
+        "prefer-arrow-callback":2,
+        "@typescript-eslint/no-var-requires": 0,
+        "@typescript-eslint/strict-boolean-expressions":0,
+        "@typescript-eslint/explicit-function-return-type":0,
+        "@typescript-eslint/consistent-type-imports":0
     }
 }
