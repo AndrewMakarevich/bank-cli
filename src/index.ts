@@ -1,49 +1,36 @@
 #!/usr/bin/env node
-// import { Command } from 'commander';
+import Observer from './Classes/Observer/Observer';
+import CommandArgument from './Classes/Parser/Argument/CommandArgument';
+import Command from './Classes/Parser/Command/Command';
+import CommandOption from './Classes/Parser/Option/CommandOption/CommandOption';
+import Parser from './Classes/Parser/Parser';
+import ParserInterface from './Classes/Parser/ParserInterface';
 
-// const program = new Command('globalProgram');
-
-import Command from './Classes/Commands/Command';
-import CommandOption from './Classes/Options/CommandOption';
-import Parser from './Classes/Parsers/Parser';
-
-// program
-//   .name('Bank-CLI')
-//   .description('CLI to manage banks and their customers')
-//   .version('1.0.0');
-
-// program
-//   .command('split')
-//   .description('Split a string into substrings and display as an array')
-//   .argument('<string>', 'string to split')
-//   .option('--first', 'display just the first substring')
-//   .option('-s, --separator <char>', 'separator character', ',')
-//   .action((str, options: { first: boolean; separator: string }) => {
-//     const limit = options.first ? 1 : undefined;
-//     console.log(options.separator);
-//     console.log(str.split(options.separator, limit));
-//   });
-
-// program
-//   .command('get-users')
-//   .description('Lists all dbUsers')
-//   .argument('<age>', 'age of the user')
-//   .option('-u, --username <username>', 'Specify users username to find')
-//   .action((age, options) => {
-//     console.log(age, options);
-//   });
-
-// program.parse();
-
-const parser = new Parser();
+const parser = new ParserInterface(new Parser(new Observer()));
 
 parser
-  .createCommand('split', 'Allows to split')
+  .addCommand(new Command('split', 'Split given string'))
   .addOption(
     new CommandOption(
       '-f | --@first',
       'If therre are should be shown only first splitted chunk'
     )
-  );
+  )
+  .addOption(new CommandOption('-s|--@silly'))
+  .addArgument(new CommandArgument('string', 'String to split'))
+  .addArgument(new CommandArgument('oneMore', 'One more string'))
+  .handle((payload) => {
+    const { command, opts, args } = payload;
+    console.log('handle command execution', command, opts, args);
+  });
 
-console.log(parser.parse());
+parser
+  .addCommand(new Command('my'))
+  .addOption(new CommandOption('-l|--@large'))
+  .addArgument(new CommandArgument('amount'))
+  .handle((payload) => {
+    const { command, opts, args } = payload;
+    console.log('handle my command execution', command, opts, args);
+  });
+
+const parseRes = parser.parse();

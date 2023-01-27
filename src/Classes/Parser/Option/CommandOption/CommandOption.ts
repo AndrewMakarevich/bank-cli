@@ -1,11 +1,11 @@
-import { type ICommandOption } from '../Parsers/interfaces';
+import { ICommandOption } from '../../interfaces/commandOption.interface';
 
 class CommandOption implements ICommandOption {
   readonly availableNames: string[];
   readonly mainName: string;
-  readonly description: string;
+  readonly description?: string;
 
-  constructor(optionPattern: string, description: string) {
+  constructor(optionPattern: string, description?: string) {
     const { availableNames, mainName } = this.parseOptionPattern(optionPattern);
 
     this.availableNames = availableNames;
