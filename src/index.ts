@@ -5,6 +5,7 @@ import Command from './Classes/Parser/Command/Command';
 import CommandOption from './Classes/Parser/Option/CommandOption/CommandOption';
 import Parser from './Classes/Parser/Parser';
 import ParserInterface from './Classes/Parser/ParserInterface';
+import Program from './Classes/Program/Program';
 
 const parser = new ParserInterface(new Parser(new Observer()));
 
@@ -27,10 +28,17 @@ parser
 parser
   .addCommand(new Command('my'))
   .addOption(new CommandOption('-l|--@large'))
-  .addArgument(new CommandArgument('amount'))
+  .addArgument(new CommandArgument('amount', 'Amount of something'))
   .handle((payload) => {
     const { command, opts, args } = payload;
     console.log('handle my command execution', command, opts, args);
   });
+
+const program = new Program(
+  'Bank-cli',
+  'CLI Application for bank management',
+  parser
+);
+program.addHelpTableCommand();
 
 const parseRes = parser.parse();

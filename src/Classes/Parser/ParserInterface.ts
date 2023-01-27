@@ -8,7 +8,7 @@ class ParserInterface {
     this.parser = parser;
   }
 
-  get existsCommands() {
+  get existCommands() {
     return this.parser.existCommands;
   }
 
