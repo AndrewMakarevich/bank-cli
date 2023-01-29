@@ -6,33 +6,11 @@ import CommandOption from './Classes/Parser/Option/CommandOption/CommandOption';
 import Parser from './Classes/Parser/Parser';
 import ParserInterface from './Classes/Parser/ParserInterface';
 import Program from './Classes/Program/Program';
+import { INextFC } from './Classes/ProgramRouter/interfaces/programRouter.interface';
+import ProgramRouter from './Classes/ProgramRouter/ProgramRouter';
+import ProgramRouterRoot from './Classes/ProgramRouter/ProgramRouterRoot';
 
 const parser = new ParserInterface(new Parser(new Observer()));
-
-parser
-  .addCommand(new Command('split', 'Split given string'))
-  .addOption(
-    new CommandOption(
-      '-f | --@first',
-      'If therre are should be shown only first splitted chunk'
-    )
-  )
-  .addOption(new CommandOption('-s|--@silly'))
-  .addArgument(new CommandArgument('string', 'String to split'))
-  .addArgument(new CommandArgument('oneMore', 'One more string'))
-  .handle((payload) => {
-    const { command, opts, args } = payload;
-    console.log('handle command execution', command, opts, args);
-  });
-
-parser
-  .addCommand(new Command('my'))
-  .addOption(new CommandOption('-l|--@large'))
-  .addArgument(new CommandArgument('amount', 'Amount of something'))
-  .handle((payload) => {
-    const { command, opts, args } = payload;
-    console.log('handle my command execution', command, opts, args);
-  });
 
 const program = new Program(
   'Bank-cli',
@@ -41,4 +19,53 @@ const program = new Program(
 );
 program.addHelpTableCommand();
 
-const parseRes = parser.parse();
+const getCommentRouter = new ProgramRouter(
+  'Comments',
+  [
+    (payload: any, next: INextFC) => {
+      console.log('get comm 1');
+      next('err');
+      console.log('after err');
+    },
+    (payload: any, next: INextFC) => {
+      console.log('get comm 2');
+      next();
+    },
+    (err: any, payload: any, next: INextFC) => {
+      console.log(`Local err ${String(err)}`);
+    },
+  ],
+  {
+    description: 'Lists array of comments',
+    opts: [{ name: '-f|--@first', description: 'Only first comment' }],
+    args: [{ name: 'text', description: 'text to search by' }],
+  }
+);
+
+const getRouter = new ProgramRouter(
+  'get',
+  [
+    function err(err: any, payload: any, next: INextFC) {
+      console.log(`Error ${String(err)}`);
+      next(err);
+    },
+    function one(payload: any, next: INextFC) {
+      console.log(1);
+      next();
+    },
+    getCommentRouter,
+    function two(payload: any, next: INextFC) {
+      console.log(2);
+      next();
+    },
+  ],
+  {
+    description: 'do something',
+    opts: [{ name: '-d|--@do', description: 'do something' }],
+    args: [{ name: 'text', description: 'text to search by' }],
+  }
+);
+
+const routerRoot = new ProgramRouterRoot(program, '', [getRouter]);
+
+parser.parse();

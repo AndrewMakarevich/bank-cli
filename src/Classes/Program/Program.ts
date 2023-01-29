@@ -1,4 +1,12 @@
-import chalk from 'chalk';
+import {
+  red,
+  redBright,
+  blue,
+  yellow,
+  greenBright,
+  magenta,
+  bold,
+} from 'colorette';
 
 import CommandArgument from '../Parser/Argument/CommandArgument';
 import Command from '../Parser/Command/Command';
@@ -39,9 +47,7 @@ class Program implements IProgram {
 
       if (!command) {
         console.log(
-          chalk.redBright(
-            `Such command(${String(commandToHelpWith)}) doesn't exists`
-          )
+          redBright(`Such command(${String(commandToHelpWith)}) doesn't exists`)
         );
 
         return;
@@ -69,9 +75,7 @@ class Program implements IProgram {
       })
       .join('---------------------------------------------------\n');
 
-    console.log(
-      `${chalk.redBright.bgBlack(applicationHeaderStr)}\n\n${commandsStrs}`
-    );
+    console.log(`${redBright(applicationHeaderStr)}\n\n${commandsStrs}`);
   }
 
   private getProgramHeaderStr() {
@@ -86,18 +90,18 @@ class Program implements IProgram {
     options: opts,
   }: ICommand) {
     // prettier-ignore
-    const commandHeaderStr = `${chalk.blue("Command")} ${chalk.yellow(name)} ${args.map((arg) => `<${chalk.greenBright(arg.name)}>`).join(" ")} ${description??''} \n\n`;
+    const commandHeaderStr = `${blue("Command")} ${yellow(name)} ${args.map((arg) => `<${greenBright(arg.name)}>`).join(" ")} ${description??''} \n\n`;
 
     const argumentsString = args
       .map((arg) => this.getArgumentStr(arg))
       .join('');
     const commandArgumentsStr = argumentsString.trim()
-      ? chalk.red('Arguments:\n') + argumentsString + '\n'
+      ? red('Arguments:\n') + argumentsString + '\n'
       : '';
 
     const optionsString = opts.map((opt) => this.getOptionStr(opt)).join('');
     const commandOptsStr = optionsString
-      ? chalk.magenta('Options(starts with - or --):\n') + optionsString
+      ? magenta('Options(starts with - or --):\n') + optionsString
       : '';
 
     return commandHeaderStr + commandArgumentsStr + commandOptsStr;
@@ -106,7 +110,7 @@ class Program implements IProgram {
   private getOptionStr(opt: ICommandOption) {
     return (
       '  ' +
-      chalk.dim.black(opt.availableNames.join('|')) +
+      bold(opt.availableNames.join('|')) +
       '  ' +
       (opt.description ?? '') +
       '\n'
@@ -115,7 +119,7 @@ class Program implements IProgram {
 
   private getArgumentStr(arg: ICommandArgument) {
     // prettier-ignore
-    return `  ${arg.description ? `<${chalk.greenBright(arg.name)}>  ${arg.description}` : ''}\n`;
+    return `  ${arg.description ? `<${greenBright(arg.name)}>  ${arg.description}` : ''}\n`;
   }
 }
 
