@@ -28,7 +28,7 @@ class Program implements IProgram {
       .handle(this.onShowHelpTable.bind(this));
   }
 
-  onShowHelpTable(payload: any) {
+  private onShowHelpTable(payload: any) {
     if (!this.parser) return;
 
     const { command, opts, args } = payload;
@@ -106,7 +106,7 @@ class Program implements IProgram {
   private getOptionStr(opt: ICommandOption) {
     return (
       '  ' +
-      chalk.dim.black(opt.availableNames.join('|')) +
+      chalk.dim(opt.availableNames.join('|')) +
       '  ' +
       (opt.description ?? '') +
       '\n'
