@@ -39,7 +39,7 @@ class Program implements IProgram {
   onShowHelpTable(payload: any) {
     if (!this.parser) return;
 
-    const { command, opts, args } = payload;
+    const { args } = payload;
     const commandToHelpWith = args.commandHelpWith;
 
     if (commandToHelpWith) {

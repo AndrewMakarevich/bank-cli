@@ -5,4 +5,6 @@ export interface IProgram {
   name?: string;
   description?: string;
   parser?: ParserInterface | null;
+
+  addHelpTableCommand: () => void;
 }

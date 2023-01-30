@@ -1,4 +1,3 @@
-import { runInNewContext } from 'vm';
 import CommandArgument from '../Parser/Argument/CommandArgument';
 import Command from '../Parser/Command/Command';
 import CommandOption from '../Parser/Option/CommandOption/CommandOption';
@@ -30,7 +29,7 @@ class ProgramRouterRoot implements IProgramRouter {
     this.middlewares = middlewares;
     this.commandParams = commandParams;
 
-    this.flatRoutes();
+    this.formCommands();
   }
 
   private isDefaultMiddleware(
@@ -66,11 +65,8 @@ class ProgramRouterRoot implements IProgramRouter {
     payload: any,
     middlewares: Array<IDefaultMiddleware | IErrorMiddleware>
   ) {
-    console.log(middlewares);
     const { defaultMiddlewares, errorMiddlewares } =
       this.divideMiddlewares(middlewares);
-
-    console.log(defaultMiddlewares, errorMiddlewares);
 
     let currDefaultMiddlewareIndex = 0;
     let currErrMiddlewareIndex = 0;
@@ -111,33 +107,29 @@ class ProgramRouterRoot implements IProgramRouter {
     });
   }
 
-  flatRoutes() {
-    const flat = (
-      currCommandName = '',
-      currentRouter: IProgramRouter = this,
-      globalMiddlewares: Array<IDefaultMiddleware | IErrorMiddleware> = []
-    ) => {
-      const localMiddlewares: Array<IDefaultMiddleware | IErrorMiddleware> = [
-        ...globalMiddlewares,
-      ];
+  formCommands(
+    currCommandName = '',
+    currentRouter: IProgramRouter = this,
+    globalMiddlewares: Array<IDefaultMiddleware | IErrorMiddleware> = []
+  ) {
+    const localMiddlewares: Array<IDefaultMiddleware | IErrorMiddleware> = [
+      ...globalMiddlewares,
+    ];
 
-      currentRouter.middlewares.forEach((middleware) => {
-        if (middleware instanceof ProgramRouter) {
-          const newCommandName = currCommandName + middleware.commandPart;
-          flat(newCommandName, middleware, [...localMiddlewares]);
-        } else if (typeof middleware === 'function') {
-          localMiddlewares.push(middleware);
-        }
-      });
-
-      if (currentRouter.commandParams) {
-        this.addCommandByParams(currCommandName, currentRouter.commandParams, [
-          ...localMiddlewares,
-        ]);
+    currentRouter.middlewares.forEach((middleware) => {
+      if (middleware instanceof ProgramRouter) {
+        const newCommandName = currCommandName + middleware.commandPart;
+        this.formCommands(newCommandName, middleware, [...localMiddlewares]);
+      } else if (typeof middleware === 'function') {
+        localMiddlewares.push(middleware);
       }
-    };
+    });
 
-    flat();
+    if (currentRouter.commandParams) {
+      this.addCommandByParams(currCommandName, currentRouter.commandParams, [
+        ...localMiddlewares,
+      ]);
+    }
   }
 }
 

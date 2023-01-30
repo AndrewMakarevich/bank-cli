@@ -23,7 +23,7 @@ class Observer implements IObserver {
     subscriptionEvent?.push(subscriber);
   }
 
-  unobserver(event: string, subscriberToDelete: ISubscriber) {
+  unobserve(event: string, subscriberToDelete: ISubscriber) {
     const subscriptionEvent = this._subscriptions.get(event);
 
     subscriptionEvent?.filter(

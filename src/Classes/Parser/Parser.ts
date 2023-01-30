@@ -1,4 +1,5 @@
 import { IObserver } from '../Observer/interfaces/observer.interface';
+import CommandInterface from './Command/CommandInterface';
 import { ICommand } from './interfaces/command.interface';
 import {
   IParsedOption,
@@ -25,10 +26,18 @@ class Parser implements IParser {
   }
 
   addCommand(command: ICommand): ICommand {
-    command.observer = this._observer;
-    this._existCommands.set(command.name, command);
+    const newCommand = new CommandInterface(command);
 
-    return command;
+    if (this._existCommands.get(newCommand.name)) {
+      throw Error(
+        `Command with such name ${newCommand.name} is already exists`
+      );
+    }
+
+    newCommand.observer = this._observer;
+    this._existCommands.set(newCommand.name, command);
+
+    return newCommand;
   }
 
   parseAsOption(option: string, command: ICommand): IParsedOption | null {
@@ -74,6 +83,7 @@ class Parser implements IParser {
     return null;
   }
 
+  // TODO: renname function and argv const
   parseArgv(): IParseArgvRes {
     const argv = process.argv.slice(2);
     let withoutCommand = false;
