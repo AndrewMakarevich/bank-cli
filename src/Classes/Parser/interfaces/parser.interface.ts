@@ -1,26 +1,21 @@
+import CommandInterface from '../../Command/CommandInterface';
+import { ICommand } from '../../Command/interfaces/command.interface';
 import { IObserver } from '../../Observer/interfaces/observer.interface';
-import { ICommand } from './command.interface';
 
 export interface IParser {
-  existCommands: Map<string, ICommand>;
+  existCommands: Map<string, CommandInterface>;
   observer: IObserver;
 
-  addCommand: (command: ICommand) => ICommand;
-  parseAsOption: (option: string, command: ICommand) => IParsedOption | null;
-  parseAsArgument: (
-    arg: string,
-    argumentsPattern: string[]
-  ) => IParsedArgument | null;
-  parseArgv: () => IParseArgvRes;
-  parse: () => IParseArgvRes;
+  addCommand: (command: ICommand) => CommandInterface;
+  parse: () => IParseArgumentsResult;
 }
 
 export type IParsedOption = Record<string, string | boolean>;
 
 export type IParsedArgument = Record<string, string | boolean>;
 
-export interface IParseArgvRes {
+export interface IParseArgumentsResult {
   command: string;
-  givenOpts: IParsedOption;
-  givenArgs: IParsedArgument;
+  givenOptions: IParsedOption;
+  givenArguments: IParsedArgument;
 }

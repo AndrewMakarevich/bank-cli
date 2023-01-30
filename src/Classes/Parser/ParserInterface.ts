@@ -1,4 +1,4 @@
-import { ICommand } from './interfaces/command.interface';
+import { ICommand } from '../Command/interfaces/command.interface';
 import { IParser } from './interfaces/parser.interface';
 
 class ParserInterface {

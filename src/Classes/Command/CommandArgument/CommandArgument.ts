@@ -1,6 +1,4 @@
-import { ICommandArgument } from '../interfaces/commandArgument.interface';
-
-class CommandArgument implements ICommandArgument {
+class CommandArgument {
   name: string;
   description?: string;
 

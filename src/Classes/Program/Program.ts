@@ -1,10 +1,17 @@
-import chalk from 'chalk';
-
-import CommandArgument from '../Parser/Argument/CommandArgument';
-import Command from '../Parser/Command/Command';
-import { ICommand } from '../Parser/interfaces/command.interface';
-import { ICommandArgument } from '../Parser/interfaces/commandArgument.interface';
-import { ICommandOption } from '../Parser/interfaces/commandOption.interface';
+import {
+  red,
+  blue,
+  yellow,
+  redBright,
+  greenBright,
+  magenta,
+  bold,
+} from 'colorette';
+import Command from '../Command/Command';
+import CommandArgument from '../Command/CommandArgument/CommandArgument';
+import CommandArgumentInterface from '../Command/CommandArgument/CommandArgumentInterface';
+import CommandInterface from '../Command/CommandInterface';
+import CommandOptionInterface from '../Command/CommandOption/CommandOptionInterface';
 import ParserInterface from '../Parser/ParserInterface';
 import { IProgram } from './interfaces/program.interface';
 
@@ -24,24 +31,24 @@ class Program implements IProgram {
 
     this.parser
       .addCommand(new Command('help', 'Shows help table'))
-      .addArgument(new CommandArgument('commandHelpWith'))
+      .addArgument(
+        new CommandArgumentInterface(new CommandArgument('commandHelpWith'))
+      )
       .handle(this.onShowHelpTable.bind(this));
   }
 
   private onShowHelpTable(payload: any) {
     if (!this.parser) return;
 
-    const { command, opts, args } = payload;
-    const commandToHelpWith = args.commandHelpWith;
+    const { command, optionsObj, argumentsObj } = payload;
+    const commandToHelpWith = argumentsObj.commandHelpWith;
 
     if (commandToHelpWith) {
       const command = this.parser.existCommands.get(commandToHelpWith);
 
       if (!command) {
         console.log(
-          chalk.redBright(
-            `Such command(${String(commandToHelpWith)}) doesn't exists`
-          )
+          redBright(`Such command(${String(commandToHelpWith)}) doesn't exists`)
         );
 
         return;
@@ -69,9 +76,7 @@ class Program implements IProgram {
       })
       .join('---------------------------------------------------\n');
 
-    console.log(
-      `${chalk.redBright.bgBlack(applicationHeaderStr)}\n\n${commandsStrs}`
-    );
+    console.log(`${redBright(applicationHeaderStr)}\n\n${commandsStrs}`);
   }
 
   private getProgramHeaderStr() {
@@ -82,40 +87,42 @@ class Program implements IProgram {
   private getCommandHelpString({
     name,
     description,
-    arguments: args,
-    options: opts,
-  }: ICommand) {
+    arguments: argumentsArr,
+    options: optionsArr,
+  }: CommandInterface) {
     // prettier-ignore
-    const commandHeaderStr = `${chalk.blue("Command")} ${chalk.yellow(name)} ${args.map((arg) => `<${chalk.greenBright(arg.name)}>`).join(" ")} ${description??''} \n\n`;
+    const commandHeaderStr = `${blue("Command")} ${yellow(name)} ${argumentsArr.map((arg) => `<${greenBright(arg.name)}>`).join(" ")} ${description??''} \n\n`;
 
-    const argumentsString = args
+    const argumentsString = argumentsArr
       .map((arg) => this.getArgumentStr(arg))
       .join('');
     const commandArgumentsStr = argumentsString.trim()
-      ? chalk.red('Arguments:\n') + argumentsString + '\n'
+      ? red('Arguments:\n') + argumentsString + '\n'
       : '';
 
-    const optionsString = opts.map((opt) => this.getOptionStr(opt)).join('');
+    const optionsString = optionsArr
+      .map((opt) => this.getOptionStr(opt))
+      .join('');
     const commandOptsStr = optionsString
-      ? chalk.magenta('Options(starts with - or --):\n') + optionsString
+      ? magenta('Options(starts with - or --):\n') + optionsString
       : '';
 
     return commandHeaderStr + commandArgumentsStr + commandOptsStr;
   }
 
-  private getOptionStr(opt: ICommandOption) {
+  private getOptionStr(option: CommandOptionInterface) {
     return (
       '  ' +
-      chalk.dim(opt.availableNames.join('|')) +
+      bold(option.availableNames.join('|')) +
       '  ' +
-      (opt.description ?? '') +
+      (option.description ?? '') +
       '\n'
     );
   }
 
-  private getArgumentStr(arg: ICommandArgument) {
+  private getArgumentStr(argument: CommandArgumentInterface) {
     // prettier-ignore
-    return `  ${arg.description ? `<${chalk.greenBright(arg.name)}>  ${arg.description}` : ''}\n`;
+    return `  ${argument.description ? `<${greenBright(argument.name)}>  ${argument.description}` : ''}\n`;
   }
 }
 

@@ -1,38 +1,15 @@
 #!/usr/bin/env node
+import GetBanksClientsCommand from './Classes/Command/GetBanksClientsCommand';
+import GetBanksCommand from './Classes/Command/GetBanksCommand';
 import Observer from './Classes/Observer/Observer';
-import CommandArgument from './Classes/Parser/Argument/CommandArgument';
-import Command from './Classes/Parser/Command/Command';
-import CommandOption from './Classes/Parser/Option/CommandOption/CommandOption';
 import Parser from './Classes/Parser/Parser';
 import ParserInterface from './Classes/Parser/ParserInterface';
 import Program from './Classes/Program/Program';
 
 const parser = new ParserInterface(new Parser(new Observer()));
 
-parser
-  .addCommand(new Command('split', 'Split given string'))
-  .addOption(
-    new CommandOption(
-      '-f | --@first',
-      'If therre are should be shown only first splitted chunk'
-    )
-  )
-  .addOption(new CommandOption('-s|--@silly'))
-  .addArgument(new CommandArgument('string', 'String to split'))
-  .addArgument(new CommandArgument('oneMore', 'One more string'))
-  .handle((payload) => {
-    const { command, opts, args } = payload;
-    console.log('handle command execution', command, opts, args);
-  });
-
-parser
-  .addCommand(new Command('my'))
-  .addOption(new CommandOption('-l|--@large'))
-  .addArgument(new CommandArgument('amount', 'Amount of something'))
-  .handle((payload) => {
-    const { command, opts, args } = payload;
-    console.log('handle my command execution', command, opts, args);
-  });
+parser.addCommand(new GetBanksCommand('getBanks'));
+parser.addCommand(new GetBanksClientsCommand('getBanksClients'));
 
 const program = new Program(
   'Bank-cli',
@@ -42,3 +19,4 @@ const program = new Program(
 program.addHelpTableCommand();
 
 const parseRes = parser.parse();
+console.log(parseRes);
