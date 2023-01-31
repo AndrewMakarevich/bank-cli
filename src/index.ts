@@ -1,9 +1,7 @@
 #!/usr/bin/env node
+import { red } from 'colorette';
 import Observer from './Classes/Observer/Observer';
 import ObserverInterface from './Classes/Observer/ObserverInterface';
-import CommandArgument from './Classes/Parser/Argument/CommandArgument';
-import Command from './Classes/Parser/Command/Command';
-import CommandOption from './Classes/Parser/Option/CommandOption/CommandOption';
 import Parser from './Classes/Parser/Parser';
 import ParserInterface from './Classes/Parser/ParserInterface';
 import Program from './Classes/Program/Program';
@@ -98,4 +96,8 @@ const getRouter = new ProgramRouter(
 
 const routerRoot = new ProgramRouterRoot(program, '', [getRouter]);
 
-mainParser.parse();
+try {
+  mainParser.parse();
+} catch (err: any) {
+  console.log(red(err.message));
+}

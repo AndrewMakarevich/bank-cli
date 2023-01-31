@@ -1,7 +1,7 @@
-import { ISubscriber } from '../../Observer/interfaces/subscriber.interface';
-import { ICommand } from '../interfaces/command.interface';
-import { ICommandArgument } from '../interfaces/commandArgument.interface';
-import { ICommandOption } from '../interfaces/commandOption.interface';
+import { ISubscriber } from '../Observer/interfaces/subscriber.interface';
+import { ICommand } from './interfaces/command.interface';
+import { ICommandArgument } from './interfaces/commandArgument.interface';
+import { ICommandOption } from './interfaces/commandOption.interface';
 
 class CommandInterface {
   private readonly command: ICommand;

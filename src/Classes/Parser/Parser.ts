@@ -1,11 +1,11 @@
 import { IObserver } from '../Observer/interfaces/observer.interface';
-import CommandInterface from './Command/CommandInterface';
-import { ICommand } from './interfaces/command.interface';
+import CommandInterface from '../Command/CommandInterface';
+import { ICommand } from '../Command/interfaces/command.interface';
 import {
   IParsedOption,
   IParsedArgument,
-  IParseArgvRes,
   IParser,
+  IParseCmdArgumentsResponse,
 } from './interfaces/parser.interface';
 
 class Parser implements IParser {
@@ -84,64 +84,67 @@ class Parser implements IParser {
   }
 
   // TODO: renname function and argv const
-  parseArgv(): IParseArgvRes {
-    const argv = process.argv.slice(2);
+  parseArguments(): IParseCmdArgumentsResponse {
+    const cmdArgumentsArr = process.argv.slice(2);
     let withoutCommand = false;
     let command = '';
 
-    if (argv[0].startsWith('-') || argv[0].startsWith('--')) {
+    if (
+      cmdArgumentsArr[0].startsWith('-') ||
+      cmdArgumentsArr[0].startsWith('--')
+    ) {
       withoutCommand = true;
     } else {
-      command = argv[0];
+      command = cmdArgumentsArr[0];
     }
 
     const currCommandInstance = this.existCommands.get(command);
 
-    if (!currCommandInstance) throw Error('Icorrect command');
+    if (!currCommandInstance) throw Error('Incorrect command');
 
     const currCommandArgumentsPattern = [
       ...currCommandInstance.arguments.map(({ name }) => name),
     ];
 
-    const givenOpts: IParsedOption = {};
-    const givenArgs: IParsedArgument = {};
+    const givenOptions: IParsedOption = {};
+    const givenArguments: IParsedArgument = {};
 
-    argv.forEach((arg, index) => {
+    cmdArgumentsArr.forEach((cmdArgument, index) => {
       if (index === 0 && !withoutCommand) return;
 
-      const newOption = this.parseAsOption(arg, currCommandInstance);
+      const newOption = this.parseAsOption(cmdArgument, currCommandInstance);
 
       if (newOption) {
-        const newOptionName = Object.keys(newOption)[0];
+        const newOptionName = Object.keys(newOption)[0]; // parseAsOption method always return object with one key or null
 
-        if (!givenOpts[newOptionName])
-          return (givenOpts[newOptionName] = newOption[newOptionName]);
+        if (!givenOptions[newOptionName])
+          return (givenOptions[newOptionName] = newOption[newOptionName]);
       }
 
       if (currCommandArgumentsPattern.length === 0) return;
 
       const newArgument = this.parseAsArgument(
-        arg,
+        cmdArgument,
         currCommandArgumentsPattern
       );
 
       if (newArgument) {
         const newArgumentName = Object.keys(newArgument)[0];
 
-        if (!givenArgs[newArgumentName]) {
-          givenArgs[newArgumentName] = newArgument[newArgumentName];
+        if (!givenArguments[newArgumentName]) {
+          givenArguments[newArgumentName] = newArgument[newArgumentName];
         }
       }
     });
 
-    return { command, givenOpts, givenArgs };
+    return { command, givenOptions, givenArguments };
   }
 
   parse() {
-    const parseRes = this.parseArgv();
-    const { command, givenArgs: args, givenOpts: opts } = parseRes;
+    const parseRes = this.parseArguments();
+    const { command, givenArguments, givenOptions } = parseRes;
 
-    this._observer.notify(command, { command, args, opts });
+    this._observer.notify(command, { command, givenArguments, givenOptions });
 
     return parseRes;
   }

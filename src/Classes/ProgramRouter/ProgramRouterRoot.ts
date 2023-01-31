@@ -1,7 +1,4 @@
-import CommandArgument from '../Parser/Argument/CommandArgument';
-import Command from '../Parser/Command/Command';
-import CommandOption from '../Parser/Option/CommandOption/CommandOption';
-import { IProgram } from '../Program/interfaces/program.interface';
+import Command from '../Command/Command';
 import {
   ICommandParams,
   IDefaultMiddleware,
@@ -11,15 +8,18 @@ import {
   IProgramRouterMiddlewares,
 } from './interfaces/programRouter.interface';
 import ProgramRouter from './ProgramRouter';
+import CommandOption from '../Command/CommandOption/CommandOption';
+import CommandArgument from '../Command/CommandArgument/CommandArgument';
+import ProgramInterface from '../Program/ProgramInterface';
 
 class ProgramRouterRoot implements IProgramRouter {
-  program: IProgram;
+  program: ProgramInterface;
   commandPart: string;
   middlewares: IProgramRouterMiddlewares;
   commandParams?: ICommandParams;
 
   constructor(
-    program: IProgram,
+    program: ProgramInterface,
     commandPart: string,
     middlewares: IProgramRouterMiddlewares,
     commandParams?: ICommandParams

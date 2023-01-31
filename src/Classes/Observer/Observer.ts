@@ -1,8 +1,9 @@
 import { IObserver } from './interfaces/observer.interface';
 import { ISubscriber } from './interfaces/subscriber.interface';
+import SubscriberInterface from './Subscriber/SubscriberInterface';
 
 class Observer implements IObserver {
-  private readonly _subscriptions: Map<string, ISubscriber[]>;
+  private readonly _subscriptions: Map<string, SubscriberInterface[]>;
 
   constructor() {
     this._subscriptions = new Map();
@@ -20,14 +21,16 @@ class Observer implements IObserver {
       subscriptionEvent = this._subscriptions.get(event);
     }
 
-    subscriptionEvent?.push(subscriber);
+    const newSubscriber = new SubscriberInterface(subscriber);
+    subscriptionEvent?.push(newSubscriber);
   }
 
   unobserve(event: string, subscriberToDelete: ISubscriber) {
     const subscriptionEvent = this._subscriptions.get(event);
 
     subscriptionEvent?.filter(
-      (subscriber) => subscriber !== subscriberToDelete
+      (subscriberInterface) =>
+        subscriberInterface.subscriber !== subscriberToDelete
     );
   }
 

@@ -15,6 +15,10 @@ class ProgramInterface {
     return this.program.description;
   }
 
+  get parser() {
+    return this.program.parser;
+  }
+
   addHelpTableCommand() {
     this.program.addHelpTableCommand();
   }

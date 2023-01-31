@@ -1,4 +1,4 @@
-import { ICommandOption } from '../../interfaces/commandOption.interface';
+import { ICommandOption } from '../interfaces/commandOption.interface';
 
 class CommandOption implements ICommandOption {
   readonly availableNames: string[];

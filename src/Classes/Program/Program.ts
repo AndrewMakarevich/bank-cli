@@ -8,13 +8,14 @@ import {
   bold,
 } from 'colorette';
 
-import CommandArgument from '../Parser/Argument/CommandArgument';
-import Command from '../Parser/Command/Command';
-import { ICommand } from '../Parser/interfaces/command.interface';
-import { ICommandArgument } from '../Parser/interfaces/commandArgument.interface';
-import { ICommandOption } from '../Parser/interfaces/commandOption.interface';
+import CommandArgument from '../Command/CommandArgument/CommandArgument';
+import Command from '../Command/Command';
+import { ICommand } from '../Command/interfaces/command.interface';
 import ParserInterface from '../Parser/ParserInterface';
 import { IProgram } from './interfaces/program.interface';
+import CommandOptionInterface from '../Command/CommandOption/CommandOptionInterface';
+import CommandArgumentInterface from '../Command/CommandArgument/CommandArgumentInterface';
+import { IParseCmdArgumentsResponse } from '../Parser/interfaces/parser.interface';
 
 class Program implements IProgram {
   name?: string;
@@ -36,11 +37,11 @@ class Program implements IProgram {
       .handle(this.onShowHelpTable.bind(this));
   }
 
-  onShowHelpTable(payload: any) {
+  onShowHelpTable(payload: IParseCmdArgumentsResponse) {
     if (!this.parser) return;
 
-    const { args } = payload;
-    const commandToHelpWith = args.commandHelpWith;
+    const { givenArguments } = payload;
+    const commandToHelpWith = givenArguments.commandHelpWith;
 
     if (commandToHelpWith) {
       const command = this.parser.existCommands.get(commandToHelpWith);
@@ -107,19 +108,19 @@ class Program implements IProgram {
     return commandHeaderStr + commandArgumentsStr + commandOptsStr;
   }
 
-  private getOptionStr(opt: ICommandOption) {
+  private getOptionStr(option: CommandOptionInterface) {
     return (
       '  ' +
-      bold(opt.availableNames.join('|')) +
+      bold(option.availableNames.join('|')) +
       '  ' +
-      (opt.description ?? '') +
+      (option.description ?? '') +
       '\n'
     );
   }
 
-  private getArgumentStr(arg: ICommandArgument) {
+  private getArgumentStr(argument: CommandArgumentInterface) {
     // prettier-ignore
-    return `  ${arg.description ? `<${greenBright(arg.name)}>  ${arg.description}` : ''}\n`;
+    return `  ${argument.description ? `<${greenBright(argument.name)}>  ${argument.description}` : ''}\n`;
   }
 }
 

@@ -1,5 +1,5 @@
 import { IObserver } from '../../Observer/interfaces/observer.interface';
-import { ICommand } from './command.interface';
+import { ICommand } from '../../Command/interfaces/command.interface';
 
 export interface IParser {
   existCommands: Map<string, ICommand>;
@@ -11,16 +11,16 @@ export interface IParser {
     arg: string,
     argumentsPattern: string[]
   ) => IParsedArgument | null;
-  parseArgv: () => IParseArgvRes;
-  parse: () => IParseArgvRes;
+  parseArguments: () => IParseCmdArgumentsResponse;
+  parse: () => IParseCmdArgumentsResponse;
 }
 
 export type IParsedOption = Record<string, string | boolean>;
 
-export type IParsedArgument = Record<string, string | boolean>;
+export type IParsedArgument = Record<string, string>;
 
-export interface IParseArgvRes {
+export interface IParseCmdArgumentsResponse {
   command: string;
-  givenOpts: IParsedOption;
-  givenArgs: IParsedArgument;
+  givenOptions: IParsedOption;
+  givenArguments: IParsedArgument;
 }
