@@ -40,7 +40,7 @@ class Program implements IProgram {
   private onShowHelpTable(payload: any) {
     if (!this.parser) return;
 
-    const { command, optionsObj, argumentsObj } = payload;
+    const { argumentsObj } = payload;
     const commandToHelpWith = argumentsObj.commandHelpWith;
 
     if (commandToHelpWith) {
@@ -60,7 +60,7 @@ class Program implements IProgram {
       return;
     }
 
-    const applicationHeaderStr = `Help node fore the ${this.getProgramHeaderStr()}`;
+    const applicationHeaderStr = `Help node fore the ${this.getProgramHeaderString()}`;
 
     const commandsNames: string[] = Array.from(
       this.parser.existCommands.keys()
@@ -79,7 +79,7 @@ class Program implements IProgram {
     console.log(`${redBright(applicationHeaderStr)}\n\n${commandsStrs}`);
   }
 
-  private getProgramHeaderStr() {
+  private getProgramHeaderString() {
     // prettier-ignore
     return `${String(this.name)} Application\nDescription:${String(this.description)}`;
   }
@@ -91,23 +91,23 @@ class Program implements IProgram {
     options: optionsArr,
   }: CommandInterface) {
     // prettier-ignore
-    const commandHeaderStr = `${blue("Command")} ${yellow(name)} ${argumentsArr.map((arg) => `<${greenBright(arg.name)}>`).join(" ")} ${description??''} \n\n`;
+    const commandHeaderString = `${blue("Command")} ${yellow(name)} ${argumentsArr.map((arg) => `<${greenBright(arg.name)}>`).join(" ")} ${description??''} \n\n`;
 
     const argumentsString = argumentsArr
       .map((arg) => this.getArgumentStr(arg))
       .join('');
-    const commandArgumentsStr = argumentsString.trim()
+    const commandArgumentsString = argumentsString.trim()
       ? red('Arguments:\n') + argumentsString + '\n'
       : '';
 
     const optionsString = optionsArr
       .map((opt) => this.getOptionStr(opt))
       .join('');
-    const commandOptsStr = optionsString
+    const commandOptionsString = optionsString
       ? magenta('Options(starts with - or --):\n') + optionsString
       : '';
 
-    return commandHeaderStr + commandArgumentsStr + commandOptsStr;
+    return commandHeaderString + commandArgumentsString + commandOptionsString;
   }
 
   private getOptionStr(option: CommandOptionInterface) {
